@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Интерактивная карта</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            background-color: #C0C0C0;
+            background-image: linear-gradient(45deg, #C0C0C0 25%, #A9A9A9 25%, #A9A9A9 50%, #C0C0C0 50%, #C0C0C0 75%, #A9A9A9 75%, #A9A9A9);
+            background-size: 40px 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            touch-action: manipulation;
+        }
+        #map-container {
+            position: fixed;
+            top: 50px;
+            left: 50px;
+            right: 50px;
+            bottom: 50px;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            border: 10px inset #999;
+            background-color: #999;
+            box-sizing: border-box;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top left;
+            transition: transform 0.1s;
+            touch-action: none;
+            width: 4000px;
+            height: 4000px;
+        }
+        .marker {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #FF0000;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+        }
+        .popup {
+            position: absolute;
+            background-color: #FFFFE0;
+            border: 2px outset #999;
+            padding: 8px;
+            font-family: Comic Sans MS, Arial, sans-serif;
+            font-size: 12px;
+            max-width: 180px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+            pointer-events: none;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.5);
+        }
+        .popup img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #000;
+        }
+        .controls {
+            position: fixed;
+            top: 60px;
+            right: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 25;
+        }
+        .controls button {
+            padding: 8px 12px;
+            font-size: 14px;
+            font-family: Verdana, Arial, sans-serif;
+            cursor: pointer;
+            background-color: #C0C0C0;
+            color: #000000;
+            border: 2px outset #999;
+            text-align: center;
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+        .controls button:active {
+            border: 2px inset #999;
+            background-color: #A9A9A9;
+        }
+        @media (max-width: 600px) {
+            #map-container {
+                top: 30px;
+                left: 30px;
+                right: 30px;
+                bottom: 30px;
+            }
+            .controls {
+                top: 40px;
+                right: 40px;
+            }
+            .controls button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .popup {
+                max-width: 140px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <p align="center">https://t.me/+zrUn0AHwR8ZmZmE6</p>
+        <img id="map" src="static/picture/map.png" alt="Карта">
+        <div class="controls">
+            <button onclick="zoomIn()">+</button>
+            <button onclick="zoomOut()">-</button>
+        </div>
+    </div>
+
+    <script>
+        const map = document.getElementById('map');
+        const mapContainer = document.getElementById('map-container');
+        let scale = 1;
+        let minScale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        const imgWidth = 4000;
+        const imgHeight = 4000;
+
+        // Установка начального масштаба и центрирование карты
+        function setInitialScale() {
+            // Учитываем рамку контейнера (10px + 10px)
+            const containerWidth = mapContainer.clientWidth - 20;
+            const containerHeight = mapContainer.clientHeight - 20;
+
+            // Масштаб, чтобы карта была видна крупнее
+            scale = containerHeight / imgHeight * 1.5;
+            minScale = containerHeight / imgHeight * 0.5;
+
+            // Центрируем карту по центру изображения
+            translateX = (containerWidth - imgWidth * scale) / 2;
+            translateY = (containerHeight - imgHeight * scale) / 2;
+
+            updateTransform();
+        }
+
+        // Масштабирование
+        function zoomIn() {
+            scale *= 1.2;
+            if (scale > 5) scale = 5;
+            updateTransform();
+            updateMarkers();
+            console.log(`Zoom in: scale=${scale}`);
+        }
+
+        function zoomOut() {
+            scale /= 1.2;
+            if (scale < minScale) scale = minScale;
+            updateTransform();
+            updateMarkers();
+            console.log(`Zoom out: scale=${scale}`);
+        }
+
+        // Обновление трансформации карты
+        function updateTransform() {
+            map.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+
+        // Перетаскивание
+        mapContainer.addEventListener('mousedown', startDragging);
+        mapContainer.addEventListener('mousemove', drag);
+        mapContainer.addEventListener('mouseup', stopDragging);
+        mapContainer.addEventListener('mouseleave', stopDragging);
+
+        // Поддержка сенсорных устройств
+        mapContainer.addEventListener('touchstart', startDragging);
+        mapContainer.addEventListener('touchmove', drag);
+        mapContainer.addEventListener('touchend', stopDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            startX = clientX - translateX;
+            startY = clientY - translateY;
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform();
+            updateMarkers();
+        }
+
+        function stopDragging() {
+            isDragging = false;
+        }
+
+        // Масштабирование колесом мыши
+        mapContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            scale += e.deltaY * -0.001;
+            if (scale < minScale) scale = minScale;
+            if (scale > 5) scale = 5;
+            updateTransform();
+            updateMarkers();
+        });
+
+        // Маркеры
+        const markers = [
+            { x: 3000, y: 1000, content: 'город 1: Бравос <br> ', type: 'text' },
+            { x: 500, y: 1615, content: 'город 2: Дерри <br>', type: 'text' },
+            { x: 400, y: 800, content: 'город 3: Готэм <br>', type: 'text' },
+            { x: 1900, y: 700, content: 'город 4: Сайлент Хилл <br>', type: 'text' },
+            { x: 600, y: 2800, content: 'город 5: Лейктаун <br>', type: 'text' },
+            { x: 700, y: 2500, content: 'город 6: Тирион <br>', type: 'text' },
+            { x: 380, y: 2380, content: 'город 7: Хогсмид <br>', type: 'text' },
+            { x: 3000, y: 1800, content: 'город 8: Аркхэм <br>', type: 'text' },
+            { x: 2400, y: 2150, content: 'город 9: Камелот <br>', type: 'text' },
+            { x: 3500, y: 3690, content: 'город 10: Спрингфилд <br>', type: 'text' },
+            { x: 1700, y: 3200, content: 'город 11: Гравити Фолс <br>', type: 'text' },
+            { x: 2100, y: 2900, content: 'город 12: Либирти Сити <br>', type: 'text' },
+            { x: 1450, y: 3500, content: 'город 13: Мэджик Сити <br>', type: 'text' }
+        ];
+
+        // Создание и обновление маркеров
+        function createMarkers() {
+            markers.forEach((marker, index) => {
+                const markerElement = document.createElement('div');
+                markerElement.className = 'marker';
+                markerElement.dataset.index = index;
+
+                const popup = document.createElement('div');
+                popup.className = 'popup';
+                popup.id = `popup-${index}`;
+                if (marker.type === 'image') {
+                    popup.innerHTML = `<img src="${marker.content}" alt="Popup image">`;
+                } else {
+                    popup.innerHTML = marker.content;
+                }
+
+                markerElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const currentPopup = document.querySelector('.popup[style*="block"]');
+                    if (currentPopup) currentPopup.style.display = 'none';
+                    popup.style.display = 'block';
+                });
+
+                mapContainer.appendChild(markerElement);
+                mapContainer.appendChild(popup);
+                console.log(`Created marker ${index}: x=${marker.x}, y=${marker.y}`);
+            });
+            updateMarkers();
+        }
+
+        // Обновление позиции маркеров и попапов
+        function updateMarkers() {
+            markers.forEach((marker, index) => {
+                const markerElement = document.querySelector(`.marker[data-index="${index}"]`);
+                const popup = document.getElementById(`popup-${index}`);
+
+                if (!markerElement || !popup) {
+                    console.error(`Marker or popup not found for index ${index}`);
+                    return;
+                }
+
+                // Координаты маркера в системе изображения
+                const markerX = marker.x * scale + translateX;
+                const markerY = marker.y * scale + translateY;
+
+                markerElement.style.left = `${markerX}px`;
+                markerElement.style.top = `${markerY}px`;
+
+                // Позиционируем попап рядом с маркером
+                popup.style.left = `${markerX + 20}px`;
+                popup.style.top = `${markerY - 20}px`;
+
+                console.log(`Marker ${index}: left=${markerX}px, top=${markerY}px`);
+            });
+        }
+
+        // Закрытие всплывающих окон при клике вне маркера
+        mapContainer.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('marker')) {
+                document.querySelectorAll('.popup').forEach(popup => {
+                    popup.style.display = 'none';
+                });
+            }
+        });
+
+        // Обработка изменения размера окна
+        window.addEventListener('resize', () => {
+            setInitialScale();
+            updateMarkers();
+        });
+
+        // Инициализация
+        createMarkers();
+        setInitialScale();
+    </script>
+</body>
+</html>
