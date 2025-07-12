@@ -34,12 +34,12 @@ body {
 }
 
 .background-top {
-    top: -5vh;
+    top: -8%;
     animation: moveRightToLeft 2s linear infinite;
 }
 
 .background-bottom {
-    bottom: -5vh;
+    bottom: -8%;
     animation: moveLeftToRight 2s linear infinite;
 }
 
