@@ -24,9 +24,9 @@ body {
 .background-top, .background-bottom {
     position: fixed;
     width: 200%;
-    height: 10vh;
+    height: 20vh;
     background-image: url('picture/theme_pic.png');
-    background-size: auto 10vh;
+    background-size: auto 20vh;
     background-repeat: repeat-x;
     user-select: none;
     pointer-events: none;
@@ -34,12 +34,12 @@ body {
 }
 
 .background-top {
-    top: 0;
+    top: -5vh;
     animation: moveRightToLeft 2s linear infinite;
 }
 
 .background-bottom {
-    bottom: 0;
+    bottom: -5vh;
     animation: moveLeftToRight 2s linear infinite;
 }
 
