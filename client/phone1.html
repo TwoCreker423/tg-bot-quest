@@ -199,13 +199,11 @@
       if (phoneNumber in validNumbers) {
         const soundId = validNumbers[phoneNumber];
         playSound(soundId);
-        alert('Вызов успешен! Номер: ' + phoneNumber);
-      } else if (phoneNumber.length >= 7) {
+        showModal('Вызов успешен! Номер: ' + phoneNumber);
+      } else if (phoneNumber.length >= 8) {
         playSound('rejectSound');
-        alert('Неверный номер!');
       } else {
         playSound('rejectSound');
-        alert('Номер слишком короткий!');
       }
     }
 
