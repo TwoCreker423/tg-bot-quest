@@ -210,26 +210,27 @@ header h1 {
     box-shadow: none;
 }
 
-.map-button {
+.map-button, .phone-button {
     padding: 0.4rem 1rem;
-    background: linear-gradient(to bottom, #32cd32, #228b22);
+    background: linear-gradient(to bottom, #9370db, #663399);
     color: #ffffff;
     border: 0.2rem outset #ffffff;
     font-size: 1.2rem;
     font-family: 'Arial', 'Verdana', sans-serif;
     cursor: pointer;
     border-radius: 0.3rem;
-    transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease, border-color 0.2s ease;
 }
 
-.map-button:hover {
-    background: linear-gradient(to bottom, #3cb371, #2e8b57);
-    box-shadow: 0 0 0.5rem rgba(0, 128, 0, 0.5);
+.map-button:hover, .phone-button:hover {
+    background: linear-gradient(to bottom, #aa80ff, #7b4dff); /* Более светлый фиолетовый */
+    box-shadow: 0 0 0.5rem rgba(147, 112, 219, 0.5); /* Фиолетовая тень */
     transform: translateY(-0.1rem);
 }
 
-.map-button:active {
-    border: 0.2rem inset #808080;
+.map-button:active, .phone-button:active {
+    background: linear-gradient(to bottom, #5d3a9b, #4b2c7a); /* Темный фиолетовый */
+    border: 0.2rem inset #d8bfd8; /* Светло-фиолетовая обводка при нажатии */
     transform: translateY(0);
     box-shadow: none;
 }
@@ -420,7 +421,7 @@ header h1 {
         border: 0.1rem outset #ffffff;
     }
 
-    .map-button {
+    .map-button, .phone-button {
         width: 100%;
         display: flex;
         justify-content: center;

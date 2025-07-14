@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ретро Телефон</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1a1a1a;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+    .phone {
+      background: linear-gradient(145deg, #2e2e2e, #1c1c1c);
+      border: 10px solid #333;
+      border-radius: 20px;
+      padding: 20px;
+      width: 300px;
+      max-width: 90vw;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .screen {
+      background-color: #0a3d0a;
+      color: #00ff00;
+      font-size: 24px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #555;
+      border-radius: 5px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .datetime-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .date {
+      font-size: 16px;
+      color: #00ff00;
+      text-align: left;
+      padding: 5px;
+    }
+    .time {
+      font-size: 16px;
+      color: #00ff00;
+      text-align: right;
+      padding: 5px;
+    }
+    .number {
+      font-size: 24px;
+      padding: 5px;
+      text-align: right;
+      margin-top: auto;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    button {
+      background: linear-gradient(145deg, #555, #333);
+      border: 2px solid #222;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 20px;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    button:active {
+      transform: scale(0.95);
+      background: linear-gradient(145deg, #666, #444);
+    }
+    .call-btn {
+      background: linear-gradient(145deg, #0a0, #050);
+    }
+    .reject-btn {
+      background: linear-gradient(145deg, #a00, #500);
+    }
+    @media (max-width: 400px) {
+      .phone {
+        width: 50vw;
+        padding: 15px;
+      }
+      button {
+        font-size: 16px;
+        padding: 10px;
+      }
+      .screen {
+        font-size: 18px;
+        height: 100px;
+      }
+      .date, .time {
+        font-size: 12px;
+      }
+      .number {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen" id="screen">
+      <div class="datetime-container">
+        <div class="date" id="date"></div>
+        <div class="time" id="time"></div>
+      </div>
+      <div class="number" id="number"></div>
+    </div>
+    <div class="keypad">
+      <button class="call-btn" onclick="makeCall()">📞</button>
+      <button onclick="pressKey('OK', 'buttonOK')">OK</button>
+      <button class="reject-btn" onclick="resetCall()">✖</button>
+      <button onclick="pressKey('1', 'button1')">1</button>
+      <button onclick="pressKey('2', 'button2')">2</button>
+      <button onclick="pressKey('3', 'button3')">3</button>
+      <button onclick="pressKey('4', 'button4')">4</button>
+      <button onclick="pressKey('5', 'button5')">5</button>
+      <button onclick="pressKey('6', 'button6')">6</button>
+      <button onclick="pressKey('7', 'button7')">7</button>
+      <button onclick="pressKey('8', 'button8')">8</button>
+      <button onclick="pressKey('9', 'button9')">9</button>
+      <button onclick="pressKey('*', 'buttonStar')">*</button>
+      <button onclick="pressKey('0', 'button0')">0</button>
+      <button onclick="pressKey('#', 'buttonHash')">#</button>
+    </div>
+  </div>
+
+  <audio id="button1" src="static/sound/button1.mp3"></audio>
+  <audio id="button2" src="static/sound/button2.mp3"></audio>
+  <audio id="button3" src="static/sound/button3.mp3"></audio>
+  <audio id="button4" src="static/sound/button4.mp3"></audio>
+  <audio id="button5" src="static/sound/button5.mp3"></audio>
+  <audio id="button6" src="static/sound/button6.mp3"></audio>
+  <audio id="button7" src="static/sound/button7.mp3"></audio>
+  <audio id="button8" src="static/sound/button8.mp3"></audio>
+  <audio id="button9" src="static/sound/button9.mp3"></audio>
+  <audio id="button0" src="static/sound/button0.mp3"></audio>
+  <audio id="buttonStar" src="static/sound/buttonStar.mp3"></audio>
+  <audio id="buttonHash" src="static/sound/buttonHash.mp3"></audio>
+  <audio id="callSound" src="static/sound/call.mp3"></audio>
+  <audio id="rejectSound" src="static/sound/reject.mp3"></audio>
+  <audio id="resetSound" src="static/sound/reset.mp3"></audio>
+  <audio id="buttonOK" src="static/sound/buttonOK.mp3"></audio>
+  <!-- Добавлены новые звуки для разных номеров -->
+  <audio id="successSound1" src="static/sound/success1.mp3"></audio>
+  <audio id="successSound2" src="static/sound/success2.mp3"></audio>
+  <audio id="successSound3" src="static/sound/success3.mp3"></audio>
+  <audio id="successSound4" src="static/sound/success4.mp3"></audio>
+  <audio id="successSound5" src="static/sound/success5.mp3"></audio>
+
+  <script>
+    let phoneNumber = '';
+
+    function playSound(soundId) {
+      const sound = document.getElementById(soundId);
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log('Sound play error:', e));
+    }
+
+    function pressKey(key, soundId) {
+      phoneNumber += key;
+      updateScreen();
+      playSound(soundId);
+    }
+
+    function updateScreen() {
+      document.getElementById('number').textContent = phoneNumber;
+    }
+
+    function resetCall() {
+      phoneNumber = '';
+      updateScreen();
+      playSound('resetSound');
+    }
+
+    function makeCall() {
+      // 5 специальных номеров с разными звуками
+      const validNumbers = {
+        '13032002': 'successSound1',    
+        '05102003': 'successSound2',    
+        '05022003': 'successSound3',    
+        '16012003': 'successSound4',     
+        '28082003': 'successSound5'    
+      };
+
+      if (phoneNumber in validNumbers) {
+        const soundId = validNumbers[phoneNumber];
+        playSound(soundId);
+        alert('Вызов успешен! Номер: ' + phoneNumber);
+      } else if (phoneNumber.length >= 7) {
+        playSound('rejectSound');
+        alert('Неверный номер!');
+      } else {
+        playSound('rejectSound');
+        alert('Номер слишком короткий!');
+      }
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      
+      // Форматирование даты
+      const dateOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      };
+      const formattedDate = now.toLocaleDateString('ru-RU', dateOptions);
+      
+      // Форматирование времени
+      const timeOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      };
+      const formattedTime = now.toLocaleTimeString('ru-RU', timeOptions);
+      
+      document.getElementById('date').textContent = formattedDate;
+      document.getElementById('time').textContent = formattedTime;
+    }
+
+    // Обновление даты и времени каждую секунду
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+  </script>
+</body>
+</html>

@@ -3,35 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.ico">
-    <title>FUTUROARCHAIC</title>
+    <title>FUTUROARCHAIC - Этап 4</title>
     <link rel="stylesheet" href="static/styles.css">
+    <script src="static/script.js" defer></script>
 </head>
-<body data-stage="4"> <!-- Меняем номер этапа для каждого файла -->
+<body>
     <div class="container">
         <header>
-            <h1>FUTUROARCHAIC <span id="username"></span></h1>
+            <h1 id="username">Имя пользователя</h1>
         </header>
-        
-        <main>
-            <div class="puzzle-container">
-                <div class="puzzle-image-container">
-                    <img id="puzzle-image" src="" alt="Текущий пазл">
-                </div>
-                <div class="puzzle-info">
-                    <h2>Этап <span id="stage-number">4</span></h2>
-                    <h3 id="puzzle-text">текст</h3>
-                    <p id="puzzle-hint"></p>
-                    <div class="answer-form">
-                        <input type="text" id="answer-input" placeholder="Введите ответ...">
-                        <button id="submit-answer">Отправить</button>
-                    </div>
-                    <p id="feedback"></p>
-                </div>
+        <div class="puzzle-container">
+            <div class="puzzle-image-container">
+                <img id="puzzle-image" src="" alt="Puzzle Image">
             </div>
-        </main>
+            <div class="puzzle-info">
+                <h2>Этап <span id="stage-number">4</span></h2>
+                <button class="phone-button" onclick="window.location.href='phone1.html'">Телефон</button>
+                <h3 id="puzzle-text">Текст головоломки</h3>
+            </div>
+            <div id="puzzle-hint">Подсказка</div>
+            <div class="answer-form">
+                <input type="text" id="answer-input" placeholder="Введите ответ">
+                <button id="submit-answer">Отправить</button>
+            </div>
+        </div>
     </div>
-
-    <script type="module" src="static/script.js"></script>
 </body>
 </html>

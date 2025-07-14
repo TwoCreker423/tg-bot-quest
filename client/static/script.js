@@ -131,6 +131,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Обработчик кнопки "Карта"
+    document.querySelector('.map-button').addEventListener('click', function() {
+        clickSound.play().catch(error => console.error('Ошибка:', error));
+        window.location.href = 'map1.html';
+    });
+
+    // Обработчик кнопки "Карта"
+    document.querySelector('.phone-button').addEventListener('click', function() {
+        clickSound.play().catch(error => console.error('Ошибка:', error));
+        window.location.href = 'phone1.html';
+    });
+
     // Адаптация для мобильных
     const container = document.querySelector('.container');
     const answerInputElement = document.getElementById('answer-input');
