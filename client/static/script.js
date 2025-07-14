@@ -1,4 +1,44 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Сначала создаем и показываем логотип
+    const logoOverlay = document.createElement('div');
+    logoOverlay.id = 'logo-overlay';
+    logoOverlay.style.position = 'fixed';
+    logoOverlay.style.top = '0';
+    logoOverlay.style.left = '0';
+    logoOverlay.style.width = '100%';
+    logoOverlay.style.height = '100%';
+    logoOverlay.style.backgroundColor = '#191970';
+    logoOverlay.style.display = 'flex';
+    logoOverlay.style.justifyContent = 'center';
+    logoOverlay.style.alignItems = 'center';
+    logoOverlay.style.zIndex = '9999';
+    
+    const logoImg = document.createElement('img');
+    logoImg.src = 'static/video/logo.gif';
+    logoImg.style.maxHeight = '100%';
+    logoImg.style.maxWidth = 'auto';
+    logoImg.style.objectFit = 'contain';
+    
+    logoOverlay.appendChild(logoImg);
+    document.body.appendChild(logoOverlay);
+    
+    // Скрываем основной контент показывается логотип
+    document.querySelector('.container').style.visibility = 'hidden';
+    
+    // Через 3 секунды скрываем логотип и показываем основной контент
+    setTimeout(function() {
+        logoOverlay.style.opacity = '0';
+        logoOverlay.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(function() {
+            logoOverlay.remove();
+            document.querySelector('.container').style.visibility = 'visible';
+            initializePage(); // Инициализируем основную логику страницы
+        }, 500);
+    }, 3000);
+});
+
+function initializePage() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('id');
     const username = urlParams.get('username');
@@ -168,4 +208,4 @@ document.addEventListener('DOMContentLoaded', function() {
         initialWindowHeight = window.innerHeight;
         adjustContainerPosition();
     });
-});
+}
