@@ -198,8 +198,8 @@
 
       if (phoneNumber in validNumbers) {
         const soundId = validNumbers[phoneNumber];
+        playSound('callSound');
         playSound(soundId);
-        showModal('Вызов успешен! Номер: ' + phoneNumber);
       } else if (phoneNumber.length >= 8) {
         playSound('rejectSound');
       } else {
