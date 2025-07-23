@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой блог в стиле Windows XP</title>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #008080;
+            color: #000;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+
+        /* Запрет выделения текста и элементов */
+        body {
+          -webkit-user-select: none; /* Для Safari и iOS */
+          -moz-user-select: none;    /* Для Firefox */
+          -ms-user-select: none;     /* Для Internet Explorer/Edge */
+          user-select: none;         /* Стандартное свойство */
+          -webkit-tap-highlight-color: transparent; /* Убирает подсветку при нажатии на мобильных устройствах */
+        }
+
+        /* Запрет контекстного меню при долгом нажатии */
+        body {
+          -webkit-touch-callout: none; /* Отключает вызов контекстного меню на iOS */
+        }
+
+        /* Основное окно */
+        .window {
+            background-color: #ece9d8;
+            border: 2px solid #003366;
+            border-radius: 6px 6px 0 0;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            max-width: 1000px;
+            overflow: hidden;
+        }
+        
+        /* Заголовок окна */
+        .title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: default;
+            z-index: 1000;
+            user-select: none;
+        }
+        
+        .window-controls {
+            display: flex;
+        }
+        
+        .window-btn {
+            width: 22px;
+            height: 22px;
+            margin-left: 6px;
+            background-color: #ece9d8;
+            border: 1px solid #003366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+        }
+        
+        /* Содержимое окна */
+        .content {
+            padding: 15px;
+        }
+        
+        /* Панель задач */
+        .taskbar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            height: 40px;
+            position: fixed;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 1000;
+        }
+        
+        .start-btn {
+            background: linear-gradient(to bottom, #ece9d8, #b5b3a4);
+            border: 1px solid #003366;
+            padding: 4px 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .start-btn img {
+            margin-right: 5px;
+        }
+        
+        /* Посты блога */
+        .post {
+            background-color: #fff;
+            border: 1px solid #aaa;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-title {
+            color: #000080;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .post-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .post-date {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        /* Навигация */
+        .sidebar {
+            background-color: #fff;
+            border: 1px solid #aaa;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            color: #000080;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .menu-item {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .menu-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 5px;
+            }
+            
+            .content {
+                padding: 10px;
+            }
+            
+            .post {
+                padding: 10px;
+            }
+            
+            .taskbar {
+                height: 35px;
+            }
+            
+            .start-btn {
+                padding: 2px 6px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Эффекты для кнопок */
+        .window-btn:hover, .start-btn:hover {
+            filter: brightness(0.9);
+        }
+        .window-btn:active, .start-btn:active {
+            filter: brightness(0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- Главное окно -->
+    <div class="window">
+        <div class="title-bar">
+            <span>БЛОГ</span>
+        </div>
+        
+        <div class="content">
+            <!-- Пост блога -->
+            <div class="post">
+                <div class="post-title">Ночь/День</div>
+                <div class="post-date">Опубликовано: 22.07.2025</div>
+                <img src="static/picture/sun_night.png" alt="Пример изображения" class="post-image">
+                <div class="post-text">
+                    <p>На холсте застыл миг вечного спора — день и ночь, солнце и луна, свет и тьма.</p>
+                    <p>Между ними — река, как лезвие, разрезающее мир на двое.</p>
+                    <p>Кто решил, что должно быть именно так? Кто провёл эту черту? </p>
+                    <p>И что скрывается в глубине вод, куда смотрят и золото дня, и серебро ночи?</p>
+                </div>
+            </div>
+            
+            <!-- Второй пост -->
+            <div class="post">
+                <div class="post-title">ГУСЕНИЦА/БАБОЧКА</div>
+                <div class="post-date">Опубликовано: 21.07.2025</div>
+                <img src="static/picture/revers.png" alt="Старый компьютер" class="post-image">
+                <div class="post-text">
+                    <p>Неторопливая гусеница и воздушная бабочка.</p>
+                    <p>Одна, словно воплощение времени, неспешно движется по ветке, другая — лёгкий отголосок будущего, уже расправила крылья.</p>
+                    <p>Если вглядеться, можно заметить, как линии и цвета перетекают друг в друга, создавая едва уловимый намёк на обратимость этого превращения.</p>
+                    <p>Будто сама природа шепчет: всё может вернуться к истокам, если смотреть под другим углом.</p>
+                    <p>Это не просто сюжет о взрослении, а игра отражений, где конец и начало могут меняться местами.</p>
+                </div>
+            </div>
+
+            <!-- Третий пост -->
+            <div class="post">
+                <div class="post-title">Весна/Лето/Осень/Зима</div>
+                <div class="post-date">Опубликовано: 20.07.2025</div>
+                <img src="static/picture/four_seasons.png" alt="Старый компьютер" class="post-image">
+                <div class="post-text">
+                    <p>Четыре времени года — четыре состояния одного дерева.</p>
+                    <p>Весенние ветви тянутся к солнцу, летняя зелень пышет жаром, осень зажигает листву огнём, а зима укутывает голые ветви снегом.</p>
+                    <p>Раздели пространство на четыре части — и увидишь, как природа сама ритмично меняет свои одежды.</p>
+                    <p>Это не просто времена года, а четыре разных мира, соединённых в одной картине.</p>
+                </div>
+            </div>
+
+            <!-- Четвертый пост -->
+            <div class="post">
+                <div class="post-title">КАРТЫ/21</div>
+                <div class="post-date">Опубликовано: 19.07.2025</div>
+                <img src="static/picture/blackjack.png" alt="Старый компьютер" class="post-image">
+                <div class="post-text">
+                    <p>Две карты слагались в совершенное число — алый туз и тёмная десятка, союз сердца и креста.</p>
+                    <p>Но между ними вкралась третья — бубновый трилистник, разрывающий гармонию.</p>
+                    <p>Третий — лишний в этом танце цифр, где каждый шаг отмерян судьбой.</p>
+                    <p>Возможно, это не просто карта, а намёк: даже в идеальном уравнении всегда найдётся переменная, превращающая победу в поражение.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Панель задач -->
+    <div class="taskbar">
+        <span>FUTUROARCHAIC</span>
+    </div>
+    
+    <script>
+        // Простые эффекты для кнопок
+        document.querySelectorAll('.window-btn').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                if (index === 2) { // Кнопка X
+                    alert('Окно будет закрыто');
+                } else if (index === 0) { // Кнопка _
+                    alert('Окно будет свернуто');
+                } else { // Кнопка □
+                    alert('Окно будет развернуто');
+                }
+            });
+        });
+        
+        document.querySelector('.start-btn').addEventListener('click', () => {
+            alert('Меню "Пуск" открыто');
+        });
+    </script>
+</body>
+</html>
