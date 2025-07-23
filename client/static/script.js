@@ -174,7 +174,7 @@ function initializePage() {
 
         if (userAnswer === answer.toLowerCase()) {
             stageCompleteSound.play();
-            showModal(`Правильно! Кодовое слово: ${nextStage}. Отправьте его боту в Telegram с помощью команды /answer ${nextStage}`, true);
+            showModal(`отправь боту в Telegram /answer ${nextStage}`, true);
         } else {
             wrongSound.play();
             showModal('Неверно! Попробуйте ещё раз.', false);
