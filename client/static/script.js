@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Сначала создаем и показываем логотип
+    // Создаем и показываем логотип
     const logoOverlay = document.createElement('div');
     logoOverlay.id = 'logo-overlay';
     logoOverlay.style.position = 'fixed';
@@ -12,24 +12,34 @@ document.addEventListener('DOMContentLoaded', function() {
     logoOverlay.style.justifyContent = 'center';
     logoOverlay.style.alignItems = 'center';
     logoOverlay.style.zIndex = '9999';
-    
+    logoOverlay.style.userSelect = 'none'; // Запрет выделения текста
+    logoOverlay.style.webkitUserSelect = 'none'; // Для Safari
+    logoOverlay.style.webkitTouchCallout = 'none'; // Для iOS
+
     const logoImg = document.createElement('img');
     logoImg.src = 'static/video/logo.gif';
     logoImg.style.maxHeight = '100%';
     logoImg.style.maxWidth = 'auto';
     logoImg.style.objectFit = 'contain';
-    
+    logoImg.draggable = false; // Запрет перетаскивания
+    logoImg.style.pointerEvents = 'none'; // Запрет взаимодействия с изображением
+
+    // Запрет контекстного меню для логотипа
+    logoImg.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
     logoOverlay.appendChild(logoImg);
     document.body.appendChild(logoOverlay);
-    
-    // Скрываем основной контент показывается логотип
+
+    // Скрываем основной контент, показывается логотип
     document.querySelector('.container').style.visibility = 'hidden';
-    
+
     // Через 3 секунды скрываем логотип и показываем основной контент
     setTimeout(function() {
         logoOverlay.style.opacity = '0';
         logoOverlay.style.transition = 'opacity 0.5s ease';
-        
+
         setTimeout(function() {
             logoOverlay.remove();
             document.querySelector('.container').style.visibility = 'visible';
